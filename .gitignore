@@ -1,0 +1,42 @@
+# Dependencies and generated output
+node_modules/
+.next/
+dist/
+build/
+coverage/
+*.tsbuildinfo
+*.log
+
+# Local configuration and SQLite data
+.env*
+!.env.example
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
+
+# Local editors and agent state
+.DS_Store
+.vscode/
+.idea/
+.agents/
+.aws/
+.codex/
+AGENTS.md
+CLAUDE.md
+tmp/
+cache/
+
+# Pitch video and other media projects are separate from prototype source
+pitch-video/
+final-video/
+video/
+video-render/
+rendered-video/
+remotion/
+renders/
+demo-media/
+*.mp4
+*.mov
+*.mkv
+*.wav

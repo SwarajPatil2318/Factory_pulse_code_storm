@@ -1,0 +1,41 @@
+{
+  "name": "factory-pulse",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "test": "tsx --test src/lib/simulation/*.test.ts src/lib/production-energy/*.test.ts src/lib/machine-state/*.test.ts src/lib/operator-intelligence/*.test.ts src/lib/decision-engine/*.test.ts src/lib/what-if/*.test.ts src/lib/sense-roi/*.test.ts src/lib/verification/*.test.ts src/lib/overview/*.test.ts",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "sim:generate": "tsx scripts/generate-simulation.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.12.0",
+    "@radix-ui/react-slot": "^1.2.3",
+    "@xyflow/react": "^12.9.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
+    "lucide-react": "^0.468.0",
+    "next": "^16.3.7",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "recharts": "^3.10.1",
+    "tailwind-merge": "^3.3.0",
+    "zod": "^4.0.0",
+    "zustand": "^5.0.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "prisma": "^6.12.0",
+    "tailwindcss": "^4.1.0",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.0"
+  }
+}

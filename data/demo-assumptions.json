@@ -1,0 +1,239 @@
+{
+  "version": "1.0.0",
+  "source": "SIMULATED",
+  "disclaimer": "Demo / simulated data. Pragati AutoFab Pvt. Ltd. is fictional; no values are real factory measurements.",
+  "timezone": "Asia/Kolkata",
+  "historyDays": 30,
+  "baselineDays": 14,
+  "intervalMinutes": 5,
+  "liveUpdateSeconds": 4,
+  "liveStepMinutes": 5,
+  "liveStartLocalHour": 14,
+  "seed": 271828,
+  "tariffInrPerKwh": 9.2,
+  "shifts": [
+    {
+      "name": "A",
+      "startMinute": 360,
+      "endMinute": 840
+    },
+    {
+      "name": "B",
+      "startMinute": 840,
+      "endMinute": 1320
+    }
+  ],
+  "products": [
+    {
+      "id": "P-001",
+      "name": "Parking Bracket A",
+      "baseQuantity": 80
+    },
+    {
+      "id": "P-002",
+      "name": "Automotive Mount B",
+      "baseQuantity": 68
+    },
+    {
+      "id": "P-003",
+      "name": "Sheet Assembly C",
+      "baseQuantity": 54
+    },
+    {
+      "id": "P-004",
+      "name": "Fabricated Frame D",
+      "baseQuantity": 42
+    }
+  ],
+  "powerKw": {
+    "LC-01": {
+      "PRODUCTIVE": [
+        25,
+        32
+      ],
+      "IDLE": [
+        9,
+        12
+      ],
+      "SETUP": [
+        12,
+        17
+      ]
+    },
+    "LC-02": {
+      "PRODUCTIVE": [
+        21,
+        27
+      ],
+      "IDLE": [
+        7,
+        10
+      ],
+      "SETUP": [
+        10,
+        14
+      ]
+    },
+    "PB-01": {
+      "PRODUCTIVE": [
+        8,
+        15
+      ],
+      "IDLE": [
+        2,
+        4
+      ],
+      "SETUP": [
+        4,
+        7
+      ]
+    },
+    "WL-01": {
+      "PRODUCTIVE": [
+        12,
+        20
+      ],
+      "IDLE": [
+        3,
+        6
+      ],
+      "SETUP": [
+        5,
+        8
+      ]
+    },
+    "AC-01": {
+      "LOADED": [
+        45,
+        55
+      ],
+      "UNLOADED": [
+        16,
+        22
+      ],
+      "OFF": [
+        0,
+        0.3
+      ]
+    },
+    "PC-01": {
+      "HEATING": [
+        65,
+        85
+      ],
+      "HOLDING": [
+        25,
+        40
+      ],
+      "IDLE": [
+        8,
+        13
+      ]
+    },
+    "CP-01": {
+      "RUNNING": [
+        8,
+        12
+      ],
+      "OFF": [
+        0,
+        0.2
+      ]
+    },
+    "AS-01": {
+      "PRODUCTIVE": [
+        7,
+        12
+      ],
+      "IDLE": [
+        2,
+        4
+      ]
+    },
+    "LIGHTING": {
+      "DAY": [
+        8,
+        13
+      ],
+      "NIGHT": [
+        2,
+        5
+      ]
+    },
+    "OFFICE": {
+      "DAY": [
+        9,
+        16
+      ],
+      "NIGHT": [
+        3,
+        7
+      ]
+    }
+  },
+  "defaultPowerKw": {
+    "OFF": [
+      0,
+      0.2
+    ],
+    "STARTUP": [
+      14,
+      22
+    ],
+    "SETUP": [
+      5,
+      9
+    ],
+    "PRODUCTIVE": [
+      9,
+      16
+    ],
+    "IDLE": [
+      2,
+      5
+    ],
+    "STANDBY": [
+      0.5,
+      2
+    ],
+    "FAULT": [
+      0.5,
+      3
+    ],
+    "MAINTENANCE": [
+      0,
+      1
+    ]
+  },
+  "unallocatedFraction": {
+    "GRID": 0.01,
+    "TR-01": 0.02,
+    "M-01": 0.11,
+    "MDB-01": 0.03,
+    "PF-01": 0.035,
+    "UF-01": 0.035,
+    "FF-01": 0.06
+  },
+  "rejectRateBaseline": [
+    0.01,
+    0.025
+  ],
+  "rejectRateAfterIssue": [
+    0.1,
+    0.14
+  ],
+  "issues": {
+    "lc01ExcessIdleFromDay": 16,
+    "ac01UnloadedFromDay": 18,
+    "pc01LowBatchFromDay": 20,
+    "cp01AfterHoursFromDay": 22,
+    "wl01SecDegradationFromDay": 15,
+    "simultaneousStartupDays": [
+      24,
+      27,
+      29
+    ],
+    "rejectReworkFromDay": 21
+  },
+  "productionDaysPerMonth": 26
+}

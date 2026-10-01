@@ -1,0 +1,73 @@
+export type OperatingState = "OFF" | "STARTUP" | "SETUP" | "PRODUCTIVE" | "IDLE" | "STANDBY" | "FAULT" | "MAINTENANCE";
+export type AnomalyStatus = "normal" | "watch" | "confirmed";
+export type VisualStatus = "normal" | "watch" | "critical" | "offline" | "inferred";
+export type EnergyMetric = "cost" | "power" | "energy" | "sec";
+
+export type EnergyNode = {
+  id: string;
+  code: string;
+  name: string;
+  equipmentType: string;
+  areaId: string | null;
+  areaName: string;
+  parentId: string | null;
+  childIds: string[];
+  meterId: string | null;
+  meterCode: string | null;
+  feederMeterCode: string | null;
+  sensorCodes: string[];
+  meteringMode: string;
+  measurementBasis: string;
+  measurementConfidence: number;
+  operatingState: OperatingState;
+  visualStatus: VisualStatus;
+  anomalyStatus: AnomalyStatus;
+  anomalyCode: string | null;
+  latestIssue: string;
+  currentKw: number;
+  todayKwh: number;
+  costTodayInr: number;
+  percentPlant: number;
+  secKwhPerPart: number;
+  idleEnergyRatio: number;
+  operatingHoursToday: number;
+  baselineKwh: number;
+  baselineDeltaPercent: number;
+  knownChildKwh: number;
+  unallocatedKwh: number;
+  unallocatedPercent: number;
+  machineKpi: { label: string; value: number; unit: string; jobKwh: number | null } | null;
+  powerSeries: Array<{ time: string; kw: number }>;
+  sevenDays: Array<{ day: string; kwh: number }>;
+};
+
+export type EnergyConnection = {
+  id: string;
+  sourceId: string;
+  targetId: string;
+  connectionType: string;
+  lossFactor: number | null;
+  flowKwh: number;
+};
+
+export type EnergyMapSnapshot = {
+  generatedAt: string;
+  simulatedAt: string;
+  source: "SIMULATED";
+  factorySecKwhPerGoodUnit: number | null;
+  mode: "SIMULATION";
+  scenarioId: string | null;
+  factoryName: string;
+  factoryLocation: string;
+  tariffInrPerKwh: number;
+  productionUnitsToday: number;
+  accountingReferenceId: string | null;
+  plantCurrentKw: number;
+  plantTodayKwh: number;
+  plantCostTodayInr: number;
+  unallocatedKwh: number;
+  unallocatedPercent: number;
+  nodes: EnergyNode[];
+  connections: EnergyConnection[];
+  areas: Array<{ id: string; name: string }>;
+};

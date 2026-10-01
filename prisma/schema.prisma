@@ -1,0 +1,297 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Factory {
+  id                    String                 @id
+  name                  String
+  city                  String
+  state                 String
+  employeeCount         Int?
+  shiftCount            Int?
+  isDemo                Boolean                @default(false)
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  areas                 Area[]
+  equipment             Equipment[]
+  meters                Meter[]
+  sensors               Sensor[]
+  productionLines       ProductionLine[]
+  electricalConnections ElectricalConnection[]
+  processConnections    ProcessConnection[]
+  simulationRuns        SimulationRun[]
+}
+
+model Area {
+  id              String           @id @default(cuid())
+  factoryId       String
+  factory         Factory          @relation(fields: [factoryId], references: [id], onDelete: Cascade)
+  code            String
+  name            String
+  description     String?
+  equipment       Equipment[]
+  productionLines ProductionLine[]
+
+  @@unique([factoryId, code])
+}
+
+model ProductionLine {
+  id        String      @id @default(cuid())
+  factoryId String
+  factory   Factory     @relation(fields: [factoryId], references: [id], onDelete: Cascade)
+  areaId    String?
+  area      Area?       @relation(fields: [areaId], references: [id], onDelete: SetNull)
+  code      String
+  name      String
+  equipment Equipment[]
+
+  @@unique([factoryId, code])
+}
+
+model Equipment {
+  id                   String                 @id @default(cuid())
+  factoryId            String
+  factory              Factory                @relation(fields: [factoryId], references: [id], onDelete: Cascade)
+  areaId               String?
+  area                 Area?                  @relation(fields: [areaId], references: [id], onDelete: SetNull)
+  productionLineId     String?
+  productionLine       ProductionLine?       @relation(fields: [productionLineId], references: [id], onDelete: SetNull)
+  code                 String
+  name                 String
+  equipmentType        String
+  manufacturer         String?
+  model                String?
+  ratedPowerKw         Float?
+  ratedCapacity        String?
+  yearInstalled        Int?
+  operatingHours       Float?
+  criticality          String                 @default("medium")
+  productionMetric     String?
+  parentFeederId       String?
+  parentFeeder         Equipment?             @relation("FeederHierarchy", fields: [parentFeederId], references: [id], onDelete: SetNull)
+  downstreamEquipment  Equipment[]            @relation("FeederHierarchy")
+  meterId              String?                @unique
+  meter                Meter?                 @relation("EquipmentMeter", fields: [meterId], references: [id], onDelete: SetNull)
+  meteringMode         String                 @default("INFERRED")
+  status               String                 @default("active")
+  sensors              Sensor[]
+  outgoingElectrical   ElectricalConnection[] @relation("ElectricalSource")
+  incomingElectrical   ElectricalConnection[] @relation("ElectricalTarget")
+  outgoingProcess      ProcessConnection[]    @relation("ProcessSource")
+  incomingProcess      ProcessConnection[]    @relation("ProcessTarget")
+  energyReadings       EnergyReading[]
+  productionJobs       ProductionJob[]
+  simulationDailies    SimulationDaily[]
+  operatorEvents       OperatorEvent[]
+  machineSignals       MachineStateSignal[]
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+
+  @@unique([factoryId, code])
+  @@index([factoryId, parentFeederId])
+}
+
+model Meter {
+  id                        String     @id @default(cuid())
+  factoryId                 String
+  factory                   Factory    @relation(fields: [factoryId], references: [id], onDelete: Cascade)
+  name                      String
+  code                      String
+  type                      String
+  measuredEquipmentOrFeeder String?
+  activePower               Float?
+  reactivePower             Float?
+  apparentPower             Float?
+  powerFactor               Float?
+  voltage                   Float?
+  current                   Float?
+  energy                    Float?
+  demand                    Float?
+  sampleIntervalSeconds     Int?
+  equipment                 Equipment? @relation("EquipmentMeter")
+  createdAt                 DateTime   @default(now())
+  updatedAt                 DateTime   @updatedAt
+
+  @@unique([factoryId, code])
+}
+
+model Sensor {
+  id                    String     @id @default(cuid())
+  factoryId             String
+  factory               Factory    @relation(fields: [factoryId], references: [id], onDelete: Cascade)
+  equipmentId           String?
+  equipment             Equipment? @relation(fields: [equipmentId], references: [id], onDelete: SetNull)
+  code                  String
+  name                  String
+  sensorType            String
+  unit                  String?
+  sampleIntervalSeconds Int?
+  status                String     @default("planned")
+
+  @@unique([factoryId, code])
+}
+
+model ElectricalConnection {
+  id                String    @id @default(cuid())
+  factoryId         String
+  factory           Factory   @relation(fields: [factoryId], references: [id], onDelete: Cascade)
+  sourceEquipmentId String
+  sourceEquipment   Equipment @relation("ElectricalSource", fields: [sourceEquipmentId], references: [id], onDelete: Cascade)
+  targetEquipmentId String
+  targetEquipment   Equipment @relation("ElectricalTarget", fields: [targetEquipmentId], references: [id], onDelete: Cascade)
+  connectionType    String    @default("electrical")
+  lossFactor        Float?
+
+  @@unique([factoryId, sourceEquipmentId, targetEquipmentId])
+  @@index([factoryId, targetEquipmentId])
+}
+
+model ProcessConnection {
+  id                String    @id @default(cuid())
+  factoryId         String
+  factory           Factory   @relation(fields: [factoryId], references: [id], onDelete: Cascade)
+  sourceEquipmentId String
+  sourceEquipment   Equipment @relation("ProcessSource", fields: [sourceEquipmentId], references: [id], onDelete: Cascade)
+  targetEquipmentId String
+  targetEquipment   Equipment @relation("ProcessTarget", fields: [targetEquipmentId], references: [id], onDelete: Cascade)
+  connectionType    String    @default("process")
+  lossFactor        Float?
+
+  @@unique([factoryId, sourceEquipmentId, targetEquipmentId])
+}
+
+model SimulationRun {
+  id                String            @id @default(cuid())
+  factoryId         String
+  factory           Factory           @relation(fields: [factoryId], references: [id], onDelete: Cascade)
+  startAt           DateTime
+  endAt             DateTime
+  baselineDays      Int
+  intervalMinutes   Int
+  liveUpdateSeconds Int
+  liveStepMinutes   Int
+  liveAnchorRealAt  DateTime
+  liveAnchorSimAt   DateTime
+  seed              Int
+  assumptionsVersion String
+  source            String            @default("SIMULATED")
+  active            Boolean           @default(true)
+  generatedAt       DateTime          @default(now())
+  readings          EnergyReading[]
+  jobs              ProductionJob[]
+  equipmentDays     SimulationDaily[]
+  factoryDays       SimulationDay[]
+  operatorEvents    OperatorEvent[]
+  machineSignals    MachineStateSignal[]
+
+  @@index([factoryId, active])
+}
+
+model EnergyReading {
+  id            Int           @id @default(autoincrement())
+  runId         String
+  run           SimulationRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+  equipmentId   String
+  equipment     Equipment     @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+  timestamp     DateTime
+  state         String
+  operatingMode String?
+  powerKw       Float
+  energyKwh     Float
+  jobId         String?
+  source        String        @default("SIMULATED")
+
+  @@unique([runId, equipmentId, timestamp])
+  @@index([runId, timestamp])
+  @@index([runId, equipmentId, timestamp])
+}
+
+model ProductionJob {
+  id            String        @id
+  runId         String
+  run           SimulationRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+  equipmentId   String
+  equipment     Equipment     @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+  productId     String
+  productName   String
+  quantity      Int
+  plannedStart  DateTime
+  actualStart   DateTime
+  plannedEnd    DateTime
+  actualEnd     DateTime
+  goodUnits     Int
+  rejectedUnits Int
+  shift         String
+  energyKwh     Float
+  source        String        @default("SIMULATED")
+
+  @@index([runId, actualStart])
+  @@index([runId, equipmentId, actualStart])
+}
+
+model SimulationDaily {
+  id                Int           @id @default(autoincrement())
+  runId             String
+  run               SimulationRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+  equipmentId       String
+  equipment         Equipment     @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+  day               DateTime
+  energyKwh         Float
+  maxPowerKw        Float
+  productiveMinutes Int
+  idleMinutes       Int
+  offMinutes        Int
+  goodUnits         Int
+
+  @@unique([runId, equipmentId, day])
+  @@index([runId, day])
+}
+
+model SimulationDay {
+  id                Int           @id @default(autoincrement())
+  runId             String
+  run               SimulationRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+  day               DateTime
+  factoryEnergyKwh  Float
+  finishedGoodUnits Int
+  factorySec        Float?
+  peakDemandKw      Float
+  source            String        @default("SIMULATED")
+
+  @@unique([runId, day])
+}
+
+model OperatorEvent {
+  id          String        @id @default(cuid())
+  runId       String
+  run         SimulationRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+  equipmentId String
+  equipment   Equipment     @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+  startAt     DateTime
+  endAt       DateTime
+  reasonCode  String
+  note        String?
+  source      String        @default("SIMULATED")
+  createdAt   DateTime      @default(now())
+
+  @@index([runId, equipmentId, startAt])
+}
+
+model MachineStateSignal {
+  id          String        @id @default(cuid())
+  runId       String
+  run         SimulationRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+  equipmentId String
+  equipment   Equipment     @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+  startAt     DateTime
+  endAt       DateTime
+  state       String
+  source      String        @default("SIMULATED_PLC")
+
+  @@index([runId, equipmentId, startAt])
+}

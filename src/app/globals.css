@@ -1,0 +1,48 @@
+@import "tailwindcss";
+@import "@xyflow/react/dist/style.css";
+
+@theme inline {
+  --color-background: var(--fp-background);
+  --color-foreground: var(--fp-text);
+  --color-card: var(--fp-surface);
+  --color-border: var(--fp-border);
+  --color-primary: var(--fp-primary);
+  --color-muted: var(--fp-muted);
+  --font-sans: Arial, Helvetica, sans-serif;
+}
+
+:root {
+  --fp-background: #f6f8f7;
+  --fp-surface: #ffffff;
+  --fp-surface-muted: #f9fbfa;
+  --fp-border: #e1e7e4;
+  --fp-text: #202b29;
+  --fp-text-muted: #66736e;
+  --fp-primary: #27664d;
+  --fp-primary-soft: #e8f1ec;
+  --fp-secondary: #5d7482;
+  --fp-secondary-soft: #edf2f4;
+  --fp-warning: #a36a18;
+  --fp-warning-soft: #fff4df;
+  --fp-critical: #b54742;
+  --fp-critical-soft: #fcedea;
+}
+
+* { box-sizing: border-box; }
+html { color-scheme: light; }
+body { margin: 0; background: var(--fp-background); color: var(--fp-text); font-family: Arial, Helvetica, sans-serif; }
+button, input, select { font: inherit; }
+button { cursor: pointer; }
+::selection { background: #d8e9df; }
+
+.fp-grid {
+  background-image: linear-gradient(to right, #edf1ee 1px, transparent 1px), linear-gradient(to bottom, #edf1ee 1px, transparent 1px);
+  background-size: 26px 26px;
+}
+
+@keyframes fp-live-pulse {
+  0%, 100% { opacity: .95; box-shadow: 0 0 0 0 rgba(61, 155, 98, .18); }
+  50% { opacity: .75; box-shadow: 0 0 0 4px rgba(61, 155, 98, 0); }
+}
+.fp-live-dot { animation: fp-live-pulse 3.6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .fp-live-dot { animation: none; } }
